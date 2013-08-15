@@ -53,17 +53,25 @@
 <script type="text/javascript">
 
 function load_coordinates() {
+	$(document).ready(function() {
 			var geocoder = new google.maps.Geocoder();
 
 			alert(geocoder == null);
 
 			geocoder.geocode({'address': 'Bangalore'}, function(results, status) {
-				if(status == google.maps.Geocoder.StatusOK) {
+				if(status == google.maps.GeocoderStatus.OK) {
 					alert('works!!!');
+					var latitude = results[0].geometry.location.mb;
+					var longitude = results[0].geometry.location.nb;
+					alert(latitude);
+					alert(longitude);
+					$("#latitude").text(latitude);
+					$("#longitude").text(longitude);
 				} else {
 					alert('doesnt work!!!');
 				}
 			});
+		});
 }
 
 </script>
