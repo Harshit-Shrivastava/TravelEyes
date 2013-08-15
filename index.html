@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<script type="text/javascript" src="js/bootstrap.js" />
+</script>
+<script type="text/javascript" src="js/jquery-1.10.2.min.js">
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+
+
+<script type="text/javascript">
+
+function load_coordinates() {
+			alert('here too');
+			var geocoder = new google.maps.Geocoder();
+
+			alert(geocoder == null);
+
+			geocoder.geocode({'address': 'Bangalore'}, function(results, status) {
+				if(status == google.maps.Geocoder.StatusOK) {
+					alert('works!!!');
+				} else {
+					alert('doesnt work!!!');
+				}
+			});
+}
+
+</script>
+
+
+<link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+
+<title>My Travel Eyes</title>
+
+</head>
+<body onload="load_coordinates();">
+
+<form class="well inline">
+
+<label>Source</label>
+<input type="text" class="span3" /><br />
+<label>Destination</label>
+<input type="text" class="span3" /><br />
+<button class="btn btn-primary">Submit</button>
+<button class="btn">Clear</button>
+
+</form>
+
+<p id="latitude">
+</p>
+<br />
+<p id="longitude">
+</p>
+
+</body>
+</html>
