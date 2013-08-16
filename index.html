@@ -3,7 +3,7 @@
 <title>My Travel Eyes</title>
 <head>
 <style>
-
+/*
 	html, body{
 		margin:0;
 		padding:0;
@@ -17,7 +17,39 @@
 		left:200px;
 		width:600px;
 		height:600px;
-	}
+	}*/
+	
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#map-canvas, #map_canvas {
+  height: 50%;
+}
+
+@media print {
+  html, body {
+    height: auto;
+  }
+
+  #map-canvas, #map_canvas {
+    height: 650px;
+  }
+}
+
+#panel {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  margin-left: -180px;
+  z-index: 5;
+  background-color: #fff;
+  padding: 5px;
+  border: 1px solid #999;
+}
+
 </style>
 
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
@@ -52,7 +84,8 @@
 
 
 <script type="text/javascript">
-
+var map_win;
+var infowindow;
 function load_coordinates() {
 	$(document).ready(function() {
 		google.maps.VisualRefresh=true;
@@ -70,30 +103,40 @@ function load_coordinates() {
 					
 					var location = ['New Delhi', latitude, longitude];
 					
-					var map_win = new google.maps.Map(document.getElementById("map-canvas"), {
-						zoom: 10,
-						center: new google.maps.LatLng(latitude, longitude),
-						mapTypeId: google.maps.MapTypeId.ROADMAP
-					});
+					var lat_lng = new google.maps.LatLng(latitude, longitude);
 					
-					map_win.setCenter(results[0].geometry.location);
+					var map_options = {
+						zoom: 4,
+						center: lat_lng,
+						mapTypeId: google.maps.MapTypeId.ROADMAP
+					};
+					
+					map_win = new google.maps.Map(document.getElementById("map-canvas"), map_options);
+					
+					//map_win.setCenter(results[0].geometry.location);
 
 					
-					var infoWindow = new google.maps.InfoWindows();
+					infowindow = new google.maps.InfoWindow();
 					var marker;
 					
 					marker = new google.maps.Marker({
-						position: results[0].geometry.location,
+						position: lat_lng,
 						map: map_win,
-						title: 'New Delhi'
+						title: 'Taj Mahal'
 					});
 					
-					google.maps.event.addListener(marker, 'click', (function(marker, i) {
+					/*google.maps.event.addListener(marker, 'click', (function(marker, i) {
 						return function() {
 							infoWindow.setContent(location[0]);
 							infoWindow.open(map_win, marker);
 						}
-					})(marker, i));
+					})(marker, i));*/
+					
+					google.maps.event.addListener(marker, 'click', function() {
+						map_win.setCenter(lat_lng);
+						map.set_zoom(18);
+						onItemClick(event, marker);
+					});
 					
 				} else {
 					alert('doesnt work!!!');
@@ -101,6 +144,16 @@ function load_coordinates() {
 			});
 		});
 }
+
+function onItemClick(event, pin) { 
+  // Create content  
+  var contentString = pin.data.text + "<br /><br /><hr />Coordinate: " + pin.data.lng +"," + pin.data.lat; 
+
+  // Replace our Info Window's content and position 
+  infowindow.setContent(contentString); 
+  infowindow.setPosition(pin.position); 
+  infowindow.open(map_win) 
+} 
 
 </script>
 
