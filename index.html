@@ -23,7 +23,7 @@
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 
 <script>
-
+/*
 	google.maps.VisualRefresh=true;
 	
 	var map;
@@ -40,7 +40,7 @@
 		
 	}
 	
-	google.maps.event.addDomListener(window,'load',initialize);
+	google.maps.event.addDomListener(window,'load',initialize);*/
 </script>
 
 <script type="text/javascript" src="js/bootstrap.js" />
@@ -48,25 +48,53 @@
 <script type="text/javascript" src="js/jquery-1.10.2.min.js">
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+<link href="/maps/documentation/javascript/examples/default.css" rel="stylesheet" />
 
 
 <script type="text/javascript">
 
 function load_coordinates() {
 	$(document).ready(function() {
+		google.maps.VisualRefresh=true;
 			var geocoder = new google.maps.Geocoder();
 
-			alert(geocoder == null);
-
-			geocoder.geocode({'address': 'Bangalore'}, function(results, status) {
+			geocoder.geocode({'address': 'Taj Mahal'}, function(results, status) {
 				if(status == google.maps.GeocoderStatus.OK) {
-					alert('works!!!');
+					//alert('works!!!');
 					var latitude = results[0].geometry.location.mb;
 					var longitude = results[0].geometry.location.nb;
-					alert(latitude);
-					alert(longitude);
+					//alert(latitude);
+					//alert(longitude);
 					$("#latitude").text(latitude);
 					$("#longitude").text(longitude);
+					
+					var location = ['New Delhi', latitude, longitude];
+					
+					var map_win = new google.maps.Map(document.getElementById("map-canvas"), {
+						zoom: 10,
+						center: new google.maps.LatLng(latitude, longitude),
+						mapTypeId: google.maps.MapTypeId.ROADMAP
+					});
+					
+					map_win.setCenter(results[0].geometry.location);
+
+					
+					var infoWindow = new google.maps.InfoWindows();
+					var marker;
+					
+					marker = new google.maps.Marker({
+						position: results[0].geometry.location,
+						map: map_win,
+						title: 'New Delhi'
+					});
+					
+					google.maps.event.addListener(marker, 'click', (function(marker, i) {
+						return function() {
+							infoWindow.setContent(location[0]);
+							infoWindow.open(map_win, marker);
+						}
+					})(marker, i));
+					
 				} else {
 					alert('doesnt work!!!');
 				}
