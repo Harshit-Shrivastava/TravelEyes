@@ -91,7 +91,7 @@ function load_coordinates() {
 		google.maps.VisualRefresh=true;
 			var geocoder = new google.maps.Geocoder();
 
-			geocoder.geocode({'address': 'Taj Mahal'}, function(results, status) {
+			geocoder.geocode({'address': $('#source_city').val()}, function(results, status) {
 				if(status == google.maps.GeocoderStatus.OK) {
 					//alert('works!!!');
 					var latitude = results[0].geometry.location.mb;
@@ -101,7 +101,7 @@ function load_coordinates() {
 					$("#latitude").text(latitude);
 					$("#longitude").text(longitude);
 					
-					var location = ['New Delhi', latitude, longitude];
+					var location = [$('#source_city').val(), latitude, longitude];
 					
 					var lat_lng = new google.maps.LatLng(latitude, longitude);
 					
@@ -116,13 +116,13 @@ function load_coordinates() {
 					//map_win.setCenter(results[0].geometry.location);
 
 					
-					infowindow = new google.maps.InfoWindow();
+					infowindow = new google.maps.InfoWindow({});
 					var marker;
 					
 					marker = new google.maps.Marker({
 						position: lat_lng,
 						map: map_win,
-						title: 'Taj Mahal'
+						title: $('#source_city').val()
 					});
 					
 					/*google.maps.event.addListener(marker, 'click', (function(marker, i) {
@@ -133,9 +133,18 @@ function load_coordinates() {
 					})(marker, i));*/
 					
 					google.maps.event.addListener(marker, 'click', function() {
-						map_win.setCenter(lat_lng);
-						map.set_zoom(18);
-						onItemClick(event, marker);
+						//alert(marker);
+						//alert(map_win);
+						//alert(lat_lng);
+						//map_win.setCenter(lat_lng);
+						//map_win.set_zoom(18);
+						  // Create content  
+						  //var contentString = marker.data.text + "<br /><br /><hr />Coordinate: " + marker.data.lng +"," + marker.data.lat; 
+						  // Replace our Info Window's content and position 
+						  var contentString = $('#source_city').val() + "<br />" + latitude + "<br />" + longitude;
+						  infowindow.setContent(contentString); 
+						  //alert(contentString);
+						  infowindow.open(map_win, marker);
 					});
 					
 				} else {
@@ -147,12 +156,12 @@ function load_coordinates() {
 
 function onItemClick(event, pin) { 
   // Create content  
-  var contentString = pin.data.text + "<br /><br /><hr />Coordinate: " + pin.data.lng +"," + pin.data.lat; 
+  /*var contentString = pin.data.text + "<br /><br /><hr />Coordinate: " + pin.data.lng +"," + pin.data.lat; 
 
   // Replace our Info Window's content and position 
   infowindow.setContent(contentString); 
   infowindow.setPosition(pin.position); 
-  infowindow.open(map_win) 
+  infowindow.open(map_win, pin);*/
 } 
 
 </script>
@@ -162,15 +171,15 @@ function onItemClick(event, pin) {
 
 </head>
 
-<body onload="load_coordinates();">
+<body>
 <form class="well inline">
 
 <label>Source</label>
-<input type="text" class="span3" /><br />
+<input type="text" class="span3" id="source_city"/><br />
 <label>Destination</label>
-<input type="text" class="span3" /><br />
-<button class="btn btn-primary">Submit</button>
-<button class="btn">Clear</button>
+<input type="text" class="span3" id="destination_city" /><br />
+<button type="button" class="btn btn-primary" onclick="load_coordinates();">Submit</button>
+<button type="button" class="btn">Clear</button>
 </form>
 <div id="map-canvas">
 
