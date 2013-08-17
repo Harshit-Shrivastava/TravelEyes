@@ -25,6 +25,18 @@ html, body {
   padding: 0;
 }
 
+        #directions-panel {
+          float: none;
+          width: auto;
+        }
+      #directions-panel {
+        height: 100%;
+        float: right;
+        width: 390px;
+        overflow: auto;
+      }
+
+
 #map-canvas, #map_canvas {
   height: 80%;
 }
@@ -128,6 +140,10 @@ google.maps.event.addDomListener(window,'load',initialize);
 <script type="text/javascript">
 var map_win;
 var infowindow;
+var directions_service, directions_renderer;
+directions_service = new google.maps.DirectionsService();
+directions_renderer = new google.maps.DirectionsRenderer();
+
 function load_coordinates() {
 	$(document).ready(function() {
 		google.maps.VisualRefresh=true;
@@ -188,7 +204,10 @@ function load_coordinates() {
 					alert('doesnt work!!!');
 				}
 			});
+			load_directions(map_win, $('#source_city').val(),  $('#destination_city').val());
 		});
+
+		
 }
 
 function create_markers(map_win, latitude, longitude, lat_lng) {
@@ -208,6 +227,29 @@ function create_markers(map_win, latitude, longitude, lat_lng) {
 		  //alert(contentString);
 		  infowindow.open(map_win, marker);
 	});
+}
+
+function load_directions(map_win, origin_city, destination_city) {
+  
+  var request = {
+    origin: origin_city, 
+    destination: destination_city, 
+    travelMode: google.maps.DirectionsTravelMode.DRIVING
+  };
+  
+  directions_service.route(request,  function(response, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      alert('valid dir');
+      alert(response);
+      alert(status);
+      directions_renderer.setMap(map_win);
+      directions_renderer.setDirections(response);
+      directions_renderer.setPanel(document.getElementById("directionsPanel"));
+    }
+    else
+      alert('invalid dir');
+  });
+  
 }
 
 function onItemClick(event, pin) { 
@@ -249,6 +291,8 @@ function onItemClick(event, pin) {
 <br />
 <p id="longitude">
 </p>
+<br />
+<div id="directionsPanel" style="float:right;width:30%;height 100%"></div>
 
 </body>
 </html>
