@@ -26,7 +26,7 @@ html, body {
 }
 
 #map-canvas, #map_canvas {
-  height: 50%;
+  height: 80%;
 }
 
 @media print {
@@ -159,41 +159,55 @@ function load_coordinates() {
 
 					
 					infowindow = new google.maps.InfoWindow({});
-					var marker;
+					create_markers(map_win, latitude, longitude, lat_lng);
 					
-					marker = new google.maps.Marker({
-						position: lat_lng,
-						map: map_win,
-						title: $('#source_city').val()
-					});
+				} else {
+					alert('doesnt work!!!');
+				}
+			});
+			
+			geocoder.geocode({'address': $('#destination_city').val()}, function(results, status) {
+				if(status == google.maps.GeocoderStatus.OK) {
+					//alert('works!!!');
+					var latitude = results[0].geometry.location.mb;
+					var longitude = results[0].geometry.location.nb;
+					//alert(latitude);
+					//alert(longitude);
+					$("#latitude").text(latitude);
+					$("#longitude").text(longitude);
 					
-					/*google.maps.event.addListener(marker, 'click', (function(marker, i) {
-						return function() {
-							infoWindow.setContent(location[0]);
-							infoWindow.open(map_win, marker);
-						}
-					})(marker, i));*/
+					var location = [$('#destination_city').val(), latitude, longitude];
 					
-					google.maps.event.addListener(marker, 'click', function() {
-						//alert(marker);
-						//alert(map_win);
-						//alert(lat_lng);
-						//map_win.setCenter(lat_lng);
-						//map_win.set_zoom(18);
-						  // Create content  
-						  //var contentString = marker.data.text + "<br /><br /><hr />Coordinate: " + marker.data.lng +"," + marker.data.lat; 
-						  // Replace our Info Window's content and position 
-						  var contentString = $('#source_city').val() + "<br />" + latitude + "<br />" + longitude;
-						  infowindow.setContent(contentString); 
-						  //alert(contentString);
-						  infowindow.open(map_win, marker);
-					});
+					var lat_lng = new google.maps.LatLng(latitude, longitude);
+
+					
+					infowindow = new google.maps.InfoWindow({});
+					create_markers(map_win, latitude, longitude, lat_lng);
 					
 				} else {
 					alert('doesnt work!!!');
 				}
 			});
 		});
+}
+
+function create_markers(map_win, latitude, longitude, lat_lng) {
+	var marker;
+					
+	marker = new google.maps.Marker({
+		position: lat_lng,
+		map: map_win,
+		title: $('#source_city').val()
+	});
+					
+
+					
+	google.maps.event.addListener(marker, 'click', function() {
+		  var contentString = $('#source_city').val() + "<br />" + latitude + "<br />" + longitude;
+		  infowindow.setContent(contentString); 
+		  //alert(contentString);
+		  infowindow.open(map_win, marker);
+	});
 }
 
 function onItemClick(event, pin) { 
